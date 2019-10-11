@@ -66,8 +66,11 @@ class Bird
         this.y = 300;
         this.width = 30;
         this.height = 30;
-        this.gravity_value = 0.1;
+        this.gravity_value = 0.05;
         this.gravity_speed = 0;
+        this.anti_gravity_value = 0.3;
+        this.anti_gravity_speed = 20;
+        this.toggle_gravity = false
     }
 
     draw()
@@ -82,11 +85,37 @@ class Bird
         this.y += this.gravity_speed;
     }
 
+    anti_gravity()
+    {
+        this.anti_gravity_speed -= this.anti_gravity_value;
+        this.y += this.anti_gravity_speed;
+    }
+
     update()
     {
         this.draw();
-        this.gravity();
+        if(this.toggle_gravity)
+            this.anti_gravity();
+        else
+            this.gravity();
     }
+
+    jump()
+    {
+        this.toggle_gravity = !this.toggle_gravity
+        console.log(this.anti_gravity_speed)
+        this.anti_gravity_speed = 0;
+        setTimeout(() => {
+            this.toggle_gravity = !this.toggle_gravity
+            this.gravity_speed = 0;
+        }, 200)
+    }
+
+    // jump()
+    // {
+    //     this.y -= 75;
+    //     this.gravity_speed = 0;
+    // }
 }
 
 let example = new Obstacle();
@@ -94,13 +123,9 @@ obstacle_array.push(example);
 
 const bird_example = new Bird();
 
-function jump()
-{
-    bird_example.y -= 50;
-    bird_example.gravity_speed = 0;
-}
-
-document.addEventListener("keydown", jump);
+document.addEventListener("keydown", () => {
+    bird_example.jump()
+});
 
 function animate(){
     if(check_gameover)
